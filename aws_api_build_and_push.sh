@@ -7,27 +7,18 @@ while getopts ":e:i:r:" o; do
     case "${o}" in
         e)
             e=${OPTARG}
-            (( e == "bnb-testnet" || e == "alpha-testnet" || e=="testnet" ||  e=="mainnet" || e=="rdoc-alpha-testnet" || e=="rdoc-testnet" ||  e=="rdoc-mainnet")) || usage
+            ((  e=="flipago_testnet" || e=="flipago_mainnet" || e == "roc_testnet" || e == "roc_mainnet" )) || usage
             case $e in
-                bnb-testnet)
+                flipago_testnet)
                     ENV=$e
                     ;;
-                alpha-testnet)
+                flipago_mainnet)
                     ENV=$e
                     ;;
-                testnet)
+                roc_testnet)
                     ENV=$e
                     ;;
-                mainnet)
-                    ENV=$e
-                    ;;
-                rdoc-alpha-testnet)
-                    ENV=$e
-                    ;;
-                rdoc-testnet)
-                    ENV=$e
-                    ;;
-                rdoc-mainnet)
+                roc_mainnet)
                     ENV=$e
                     ;;
                 *)
@@ -54,7 +45,7 @@ if [ -z "${e}" ] || [ -z "${i}" ] || [ -z "${r}" ]; then
     usage
 fi
 
-docker image build -t aws_operations_web_service_$ENV -f ./Dockerfile.api .
+docker image build -t stable-protocol-api-v2_$ENV -f ./Dockerfile.api .
 
 echo "Build done!"
 
@@ -63,8 +54,8 @@ $(aws ecr get-login --no-include-email --region $AWS_REGION)
 
 echo "Logging to AWS done!"
 
-docker tag aws_operations_web_service_$ENV:latest $AWS_ID.dkr.ecr.$AWS_REGION.amazonaws.com/aws_operations_web_service_$ENV:latest
+docker tag stable-protocol-api-v2_$ENV:latest $AWS_ID.dkr.ecr.$AWS_REGION.amazonaws.com/stable-protocol-api-v2_$ENV:latest
 
-docker push $AWS_ID.dkr.ecr.$AWS_REGION.amazonaws.com/aws_operations_web_service_$ENV:latest
+docker push $AWS_ID.dkr.ecr.$AWS_REGION.amazonaws.com/stable-protocol-api-v2_$ENV:latest
 
 echo "finish done!"

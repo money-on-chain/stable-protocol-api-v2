@@ -9,9 +9,9 @@ class InfoApi(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                  "title": "Stable Protocol v0 API",
-                  "description": "Stable Protocol v0 API",
-                  "version": "1.0.0"
+                  "title": "Stable Protocol API v2",
+                  "description": "Stable Protocol API v2",
+                  "version": "1.0.4"
             }
 
         }

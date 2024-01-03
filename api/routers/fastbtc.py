@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, HTTPException
 from typing import Annotated
 
-from api.db import db
+from api.db import get_db
 from api.models.fastbtc import mongo_date_to_str, PegOutList
 
 
@@ -9,15 +9,15 @@ router = APIRouter()
 
 
 @router.get(
-    "/api/v1/webapp/fastbtc/pegout/",
+    "/v1/fastbtc/pegout/",
     tags=["fastbtc"],
     response_description="Returns the pegout requests from an address",
     response_model=PegOutList
 )
 async def peg_out_list(
-        address: Annotated[str, Query(
-            title="Address",
-            description="User Address",
+        recipient: Annotated[str, Query(
+            title="Recipient address",
+            description="Recipient Address",
             regex='^0x[a-fA-F0-9]{40}$')] = '0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3',
         limit: Annotated[int, Query(
             title="Limit",
@@ -28,8 +28,14 @@ async def peg_out_list(
             description="Skip",
             le=10000)] = 0):
 
+    # get mongo db connection
+    db = get_db()
+
+    if not db:
+        raise HTTPException(status_code=400, detail="Cannot get DB")
+
     query_filter = {
-        "rskAddress": {"$regex": address, '$options': 'i'},
+        "rskAddress": {"$regex": recipient, '$options': 'i'},
         "type": "PEG_OUT"
     }
 
