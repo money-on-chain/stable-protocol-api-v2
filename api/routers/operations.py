@@ -2,7 +2,7 @@ from fastapi import APIRouter, Query, HTTPException
 from typing import Annotated
 
 from api.db import get_db
-from api.models.operations import mongo_date_to_str, OperationsList
+from api.models.operations import mongo_date_to_str, OperationsList, Operations
 
 
 router = APIRouter()
@@ -80,3 +80,54 @@ async def operations_list(
     }
 
     return dict_values
+
+
+@router.get(
+    "/v1/operations/oper_id/",
+    tags=["operations"],
+    response_description="Status operations given oper id",
+    response_model=Operations
+)
+async def operations_oper_id(
+        oper_id: Annotated[int, Query(
+            title="Recipient address",
+            description="Recipient address")] = 13
+):
+
+    # get mongo db connection
+    db = await get_db()
+
+    if db is None:
+        raise HTTPException(status_code=400, detail="Cannot get DB")
+
+    query_filter = {
+        "operId_": oper_id
+    }
+
+    operations = await db["operations"]\
+        .find_one(query_filter)
+
+    if operations:
+        operations['_id'] = str(operations['_id'])
+
+        if operations.get("createdAt"):
+            operations['createdAt'] = mongo_date_to_str(operations['createdAt'])
+
+        if operations.get("lastUpdatedAt"):
+            operations['lastUpdatedAt'] = mongo_date_to_str(operations['lastUpdatedAt'])
+
+        if operations.get("confirmationTime"):
+            operations['confirmationTime'] = mongo_date_to_str(operations['confirmationTime'])
+
+    # Last block indexed
+    indexer = await db["moc_indexer"] \
+        .find_one(sort=[("updatedAt", -1)])
+
+    last_block_indexed = 0
+    if indexer:
+        if 'last_raw_tx_block' in indexer:
+            last_block_indexed = indexer['last_raw_tx_block']
+
+    operations['last_block_indexed'] = last_block_indexed
+
+    return operations

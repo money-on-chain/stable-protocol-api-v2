@@ -72,6 +72,7 @@ class Operations(BaseModel):
     confirmationTime: Optional[datetime.datetime] = None
     params: Optional[Params] = None
     executed: Optional[Executed] = None
+    last_block_indexed: Optional[int] = None
 
     class Config:
         #allow_population_by_field_name = True
