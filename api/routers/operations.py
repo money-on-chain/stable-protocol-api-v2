@@ -2,7 +2,8 @@ from fastapi import APIRouter, Query, HTTPException
 from typing import Annotated
 
 from api.db import get_db
-from api.models.operations import mongo_date_to_str, OperationsList, Operations
+from api.models.operations import OperationsList, Operations, DATE_FIELDS
+from api.utils import fields_date_to_str
 
 
 router = APIRouter()
@@ -53,14 +54,7 @@ async def operations_list(
     for trx in operations:
         trx['_id'] = str(trx['_id'])
 
-        if trx.get("createdAt"):
-            trx['createdAt'] = mongo_date_to_str(trx['createdAt'])
-
-        if trx.get("lastUpdatedAt"):
-            trx['lastUpdatedAt'] = mongo_date_to_str(trx['lastUpdatedAt'])
-
-        if trx.get("confirmationTime"):
-            trx['confirmationTime'] = mongo_date_to_str(trx['confirmationTime'])
+        fields_date_to_str(trx, DATE_FIELDS)
 
     # Last block indexed
 
@@ -110,14 +104,7 @@ async def operations_oper_id(
     if operations:
         operations['_id'] = str(operations['_id'])
 
-        if operations.get("createdAt"):
-            operations['createdAt'] = mongo_date_to_str(operations['createdAt'])
-
-        if operations.get("lastUpdatedAt"):
-            operations['lastUpdatedAt'] = mongo_date_to_str(operations['lastUpdatedAt'])
-
-        if operations.get("confirmationTime"):
-            operations['confirmationTime'] = mongo_date_to_str(operations['confirmationTime'])
+        fields_date_to_str(operations, DATE_FIELDS)
 
     # Last block indexed
     indexer = await db["moc_indexer"] \

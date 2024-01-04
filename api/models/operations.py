@@ -4,8 +4,15 @@ from typing import Optional, List
 import uuid
 
 
-def mongo_date_to_str(x):
-    return str(x.isoformat(timespec='milliseconds'))+"Z"
+DATE_FIELDS = [
+    'params.createdAt',
+    'params.lastUpdatedAt',
+    'executed.createdAt',
+    'executed.lastUpdatedAt',
+    'createdAt',
+    'lastUpdatedAt',
+    'confirmationTime'
+]
 
 
 class Params(BaseModel):
