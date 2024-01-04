@@ -17,6 +17,7 @@ DATE_FIELDS = [
 
 class Params(BaseModel):
     tp: Optional[str] = None
+    tpIndex: Optional[int] = None
     token: Optional[str] = None
     amount: Optional[str] = None
     qTP: Optional[str] = None
@@ -26,7 +27,9 @@ class Params(BaseModel):
     qTPmin: Optional[str] = None
     qTCmin: Optional[str] = None
     tpFrom: Optional[str] = None
+    tpFromIndex: Optional[int] = None
     tpTo: Optional[str] = None
+    tpToIndex: Optional[int] = None
     sender: Optional[str] = None
     recipient: Optional[str] = None
     vendor: Optional[str] = None
@@ -38,8 +41,11 @@ class Params(BaseModel):
 
 class Executed(BaseModel):
     tp_: Optional[str] = None
+    tpIndex_: Optional[int] = None
     tpFrom_: Optional[str] = None
+    tpFromIndex_: Optional[int] = None
     tpTo_: Optional[str] = None
+    tpToIndex_: Optional[int] = None
     qTPfrom_: Optional[str] = None
     qTPto_: Optional[str] = None
     tp: Optional[str] = None
@@ -85,8 +91,66 @@ class Operations(BaseModel):
         #allow_population_by_field_name = True
         json_schema_extra = {
             "example": {
-                "id": "0x0000000",
-                "hash": "0x0000000"
+                "_id": "658dac848e6961287ceb62e5",
+                "hash": "0xaddc1a3b49fcd5528a4a394d98e095c1f89475e1e30b9a237e93231c15e4a265",
+                "blockNumber": 4643915,
+                "operId_": 13,
+                "gas": 4500000,
+                "gasPrice": "66458000",
+                "gasUsed": 117984,
+                "gasFeeRBTC": "7840980672000",
+                "status": 1,
+                "errorCode_": None,
+                "msg_": None,
+                "reason_": None,
+                "operation": "TPRedeem",
+                "createdAt": None,
+                "lastUpdatedAt": "2023-12-28T14:15:01.629000Z",
+                "confirmationTime": "2023-12-28T14:20:05.481000Z",
+                "params": {
+                    "tp": "0x0AE66294941fdA20c336cfC57EEAF5C2c35cecB4",
+                    "token": None,
+                    "amount": None,
+                    "qTP": "5000000000000000000",
+                    "qTC": None,
+                    "qACmax": None,
+                    "qACmin": "5142292984339019",
+                    "qTPmin": None,
+                    "qTCmin": None,
+                    "tpFrom": None,
+                    "tpTo": None,
+                    "sender": "0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3",
+                    "recipient": "0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3",
+                    "vendor": "0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3",
+                    "hash": "0xdca55acfd2673032ae215affe4d14b7a924ec920cab0d5f09c33c15bf62252f8",
+                    "blockNumber": 4643908,
+                    "createdAt": "2023-12-28T17:11:54Z",
+                    "lastUpdatedAt": "2023-12-28T14:12:36.867000Z"
+                },
+                "executed": {
+                    "tp_": "0x0AE66294941fdA20c336cfC57EEAF5C2c35cecB4",
+                    "tpFrom_": None,
+                    "tpTo_": None,
+                    "qTPfrom_": None,
+                    "qTPto_": None,
+                    "tp": None,
+                    "qTP_": "5000000000000000000",
+                    "qTC_": None,
+                    "qAC_": "5152598180700420",
+                    "qACfee_": "52099071594544",
+                    "qFeeToken_": "0",
+                    "qACVendorMarkup_": "5209907159454",
+                    "qFeeTokenVendorMarkup_": "0",
+                    "vendor_": "0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3",
+                    "operId_": 13,
+                    "sender_": "0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3",
+                    "recipient_": "0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3",
+                    "hash": "0xaddc1a3b49fcd5528a4a394d98e095c1f89475e1e30b9a237e93231c15e4a265",
+                    "blockNumber": 4643915,
+                    "createdAt": "2023-12-28T17:13:57Z",
+                    "lastUpdatedAt": "2023-12-28T14:15:01.603000Z"
+                },
+                "last_block_indexed": None
             }
         }
 
