@@ -101,10 +101,12 @@ async def operations_oper_id(
     operations = await db["operations"]\
         .find_one(query_filter)
 
-    if operations:
-        operations['_id'] = str(operations['_id'])
+    if not operations:
+        raise HTTPException(status_code=404, detail="Operation id not found")
 
-        fields_date_to_str(operations, DATE_FIELDS)
+    operations['_id'] = str(operations['_id'])
+
+    fields_date_to_str(operations, DATE_FIELDS)
 
     # Last block indexed
     indexer = await db["moc_indexer"] \
