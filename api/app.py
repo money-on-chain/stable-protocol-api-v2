@@ -29,6 +29,9 @@ tags_metadata += [{
     "Related to _information_ and _health measurements_ of this _API_"}]
 
 
+BACKEND_CORS_ORIGINS = getenv("BACKEND_CORS_ORIGINS", default=False)
+ALLOWED_HOSTS = getenv("ALLOWED_HOSTS", default=False)
+
 app = FastAPI(
     title=API_TITLE,
     version=API_VERSION,
@@ -44,17 +47,20 @@ app.add_event_handler("shutdown", close_db_connect)
 app.include_router(operations.router)
 app.include_router(fastbtc.router)
 
-# Sets all CORS enabled origins
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[str(origin) for origin in getenv("BACKEND_CORS_ORIGINS", default=["*"])],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-# Guards against HTTP Host Header attacks
-app.add_middleware(TrustedHostMiddleware, allowed_hosts=getenv("ALLOWED_HOSTS", default=["*"]))
+if BACKEND_CORS_ORIGINS:
+    # Sets all CORS enabled origins
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[str(origin) for origin in BACKEND_CORS_ORIGINS],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+if ALLOWED_HOSTS:
+    # Guards against HTTP Host Header attacks
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=ALLOWED_HOSTS)
 
 log.info("Starting webservice API version: {0}".format(API_VERSION))
 
