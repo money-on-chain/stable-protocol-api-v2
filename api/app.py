@@ -11,7 +11,7 @@ from api.logger import log
 from api.db import connect_and_init_db, close_db_connect
 
 
-API_VERSION = '1.0.4'
+API_VERSION = '1.0.5'
 API_TITLE = 'Stable Protocol API v2'
 API_DESCRIPTION = """
 This is a requirement for [stable-protocol-interface-v2](https://github.com/money-on-chain/stable-protocol-interface-v2)
