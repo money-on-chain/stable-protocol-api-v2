@@ -33,10 +33,10 @@ Go to http://localhost:8000/
 ### Deployed environments
 
 
-| Environment   | Project | URL                                                         | 
-|---------------|---------|-------------------------------------------------------------|
-| Testnet       | Flipago | https://api-operations-v2-flipago-testnet.moneyonchain.com/ |
-| Mainnet       | Flipago | https://api-operations-v2-flipago.moneyonchain.com/         |
+| Environment   | Project   | URL                                                         | 
+|---------------|-----------|-------------------------------------------------------------|
+| Testnet       | Flipmoney | https://api-operations-v2-flipago-testnet.moneyonchain.com/ |
+| Mainnet       | Flipmoney | https://api-operations-v2-flipago.moneyonchain.com/         |
 
 ### Docker (Recommended)
 
