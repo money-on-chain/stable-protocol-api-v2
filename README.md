@@ -17,7 +17,7 @@ Requirements:
 pip install -r requirements.txt
 
 # Configure the location of your MongoDB database:
-copy .example.env .env
+copy environments/development/.example.env .env
 
 # Edit .env file and change settings point Mongo DB uris 
 
@@ -33,10 +33,12 @@ Go to http://localhost:8000/
 ### Deployed environments
 
 
-| Environment   | Project   | URL                                                         | 
-|---------------|-----------|-------------------------------------------------------------|
-| Testnet       | Flipmoney | https://api-operations-v2-flipago-testnet.moneyonchain.com/ |
-| Mainnet       | Flipmoney | https://api-operations-v2-flipago.moneyonchain.com/         |
+| Environment   | Project   | URL                                    | 
+|---------------|-----------|----------------------------------------|
+| Testnet       | Flipmoney | https://api-testnet.flipmoney.io/      |
+| Mainnet       | Flipmoney | https://api-v2.flipmoney.io/           |
+| Testnet       | ROC       | https://api-v2-testnet.rifonchain.com/ |
+| Mainnet       | ROC       | https://api-v2.rifonchain.com/         |
 
 ### Docker (Recommended)
 
