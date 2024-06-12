@@ -6,12 +6,13 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from api.routers import operations
 from api.routers import fastbtc
+from api.routers import events
 from api.models.base import InfoApi
 from api.logger import log
 from api.db import connect_and_init_db, close_db_connect
 
 
-API_VERSION = '1.0.5'
+API_VERSION = '1.0.6'
 API_TITLE = 'Stable Protocol API v2'
 API_DESCRIPTION = """
 This is a requirement for [stable-protocol-interface-v2](https://github.com/money-on-chain/stable-protocol-interface-v2)
@@ -46,6 +47,7 @@ app.add_event_handler("shutdown", close_db_connect)
 
 app.include_router(operations.router)
 app.include_router(fastbtc.router)
+app.include_router(events.router)
 
 
 if BACKEND_CORS_ORIGINS:

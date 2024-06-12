@@ -57,8 +57,6 @@ docker run -d \
 --env APP_MONGO_DB=roc_mainnet \
 --env BACKEND_CORS_ORIGINS=["*"] \
 --env ALLOWED_HOSTS=["*"] \
---env VENDOR_ADDRESS=0xC61820bFB8F87391d62Cd3976dDc1d35e0cf7128 \
---env COMMISSION_SPLITTER_V2=0xce4548BC0b865197D94E15a5440299398aB9d32E
 stable_protocol_api_v2
 ```
 
