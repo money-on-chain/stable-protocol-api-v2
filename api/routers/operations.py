@@ -2,7 +2,7 @@ from fastapi import APIRouter, Query, HTTPException
 from typing import Annotated
 
 from api.db import get_db
-from api.models.operations import OperationsList, Operations, DATE_FIELDS
+from api.models.operations import OperationsList, Operations, DATE_FIELDS, OperationsSummaryResponse
 from api.utils import fields_date_to_str
 
 
@@ -120,3 +120,50 @@ async def operations_oper_id(
     operations['last_block_indexed'] = last_block_indexed
 
     return operations
+
+@router.get(
+    "/v1/operations/queued_opers/",
+    tags=["operations"],
+    response_description="Accumulated value for queued TPMint or TPRedeem operations",
+    response_model=OperationsSummaryResponse
+)
+async def queued_opers():
+    db = await get_db()
+
+    if db is None:
+        raise HTTPException(status_code=400, detail="Cannot get DB")
+
+    query_filter = {
+        "status": 0,
+        "operation": {"$in": ["TPMint", "TPRedeem", "TCandTPMint", "TCandTPRedeem", "TCSwapForTP", "TPSwapForTC", "TPSwapForTP"]}
+    }
+
+    try:
+        cursor = db["operations"].find(query_filter)
+
+        result = {
+            "TPMint": {"qTP": 0, "qTC": 0},
+            "TPRedeem": {"qTP": 0, "qTC": 0},
+            "TCandTPMint": {"qTP": 0, "qTC": 0},
+            "TCandTPRedeem": {"qTP": 0, "qTC": 0},
+            "TCSwapForTP": {"qTP": 0, "qTC": 0},
+            "TPSwapForTC": {"qTP": 0, "qTC": 0},
+            "TPSwapForTP": {"qTP": 0, "qTC": 0}
+        }
+
+        async for operation in cursor:
+            operation_type = operation["operation"]
+            qtp_value = operation["params"].get("qTP", 0)
+            qtc_value = operation["params"].get("qTC", 0)
+
+            qtp_value = int(qtp_value) if qtp_value is not None else 0
+            qtc_value = int(qtc_value) if qtc_value is not None else 0
+
+            if operation_type in result:
+                result[operation_type]["qTP"] += qtp_value
+                result[operation_type]["qTC"] += qtc_value
+
+        return {"result": result}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

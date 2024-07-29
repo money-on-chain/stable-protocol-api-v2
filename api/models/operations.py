@@ -1,8 +1,8 @@
 import datetime
+from typing import Dict
 from pydantic import BaseModel, Field
 from typing import Optional, List
 import uuid
-
 
 DATE_FIELDS = [
     'params.createdAt',
@@ -170,3 +170,10 @@ class OperationsList(BaseModel):
                 "last_block_indexed": "12345678"
             }
         }
+
+class OperationSummary(BaseModel):
+    qTP: int = 0
+    qTC: int = 0
+
+class OperationsSummaryResponse(BaseModel):
+    result: Dict[str, OperationSummary]
