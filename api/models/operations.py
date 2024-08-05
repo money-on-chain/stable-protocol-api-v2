@@ -174,6 +174,7 @@ class OperationsList(BaseModel):
 class OperationSummary(BaseModel):
     qTP: int = 0
     qTC: int = 0
+    tpIndex: int = 0
 
 class OperationsSummaryResponse(BaseModel):
-    result: Dict[str, OperationSummary]
+    result: Dict[str, List[OperationSummary]]
