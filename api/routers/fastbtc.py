@@ -29,9 +29,9 @@ async def peg_out_list(
             le=10000)] = 0):
 
     # get mongo db connection
-    db = get_db()
+    db = await get_db()
 
-    if not db:
+    if db is None:
         raise HTTPException(status_code=400, detail="Cannot get DB")
 
     query_filter = {
