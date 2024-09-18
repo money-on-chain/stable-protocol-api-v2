@@ -142,7 +142,7 @@ class DelayMachinePaymentDeposit(BaseModel):
     source: Optional[str] = None
     destination: Optional[str] = None
     amount: Optional[str] = None
-    expiration: Optional[str] = None
+    expiration: Optional[int] = None
     createdAt: Optional[datetime.datetime] = None
     lastUpdatedAt: Optional[datetime.datetime] = None
 
@@ -275,8 +275,8 @@ class SupportersCancelEarnings(BaseModel):
     hash: Optional[str] = None
     blockNumber: Optional[int] = None
     earnings: Optional[str] = None
-    start: Optional[str] = None
-    end: Optional[str] = None
+    start: Optional[int] = None
+    end: Optional[int] = None
     createdAt: Optional[datetime.datetime] = None
     lastUpdatedAt: Optional[datetime.datetime] = None
 
@@ -317,8 +317,8 @@ class SupportersPayEarnings(BaseModel):
     hash: Optional[str] = None
     blockNumber: Optional[int] = None
     earnings: Optional[str] = None
-    start: Optional[str] = None
-    end: Optional[str] = None
+    start: Optional[int] = None
+    end: Optional[int] = None
     createdAt: Optional[datetime.datetime] = None
     lastUpdatedAt: Optional[datetime.datetime] = None
 
