@@ -39,7 +39,9 @@ async def operations_list(
     query_filter = {
         "$or": [
             {"params.recipient": {"$regex": recipient.lower(), '$options': 'i'}},
-            {"params.sender": {"$regex": recipient.lower(), '$options': 'i'}}
+            {"params.sender": {"$regex": recipient.lower(), '$options': 'i'}},
+            {"executed.recipient_": {"$regex": recipient.lower(), '$options': 'i'}},
+            {"executed.sender_": {"$regex": recipient.lower(), '$options': 'i'}}
         ]
     }
 
