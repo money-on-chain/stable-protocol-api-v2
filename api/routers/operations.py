@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Query, HTTPException
 from typing import Annotated
+from pymongo.collation import Collation
 
 from api.db import get_db
 from api.models.operations import OperationSummary, OperationsList, Operations, DATE_FIELDS, OperationsSummaryResponse
 from api.utils import fields_date_to_str
 
+collation = Collation(locale="en", strength=2)
 
 router = APIRouter()
 
@@ -36,22 +38,41 @@ async def operations_list(
     if db is None:
         raise HTTPException(status_code=400, detail="Cannot get DB")
 
+    recipient = recipient.lower()
+
+    """
+    This need to create index:
+    
+    db.operations.createIndex(
+      { "executed.recipient_": 1 },
+      { name: "executed_recipient_ci", collation: { locale: "en", strength: 2 } }
+    )
+    
+    db.operations.createIndex(
+      { "executed.sender_": 1 },
+      { name: "executed_sender_ci", collation: { locale: "en", strength: 2 } }
+    )
+    """
+
     query_filter = {
         "$or": [
-            {"params.recipient": {"$regex": recipient.lower(), '$options': 'i'}},
-            {"params.sender": {"$regex": recipient.lower(), '$options': 'i'}},
-            {"executed.recipient_": {"$regex": recipient.lower(), '$options': 'i'}},
-            {"executed.sender_": {"$regex": recipient.lower(), '$options': 'i'}}
+            {"params.recipient": recipient},
+            {"params.sender": recipient},
+            {"executed.recipient_": recipient},
+            {"executed.sender_": recipient}
         ]
     }
 
-    operations = await db["operations"]\
-        .find(query_filter)\
-        .skip(skip)\
-        .limit(limit)\
+    operations = await db["operations"] \
+        .find(query_filter, collation=collation) \
+        .skip(skip) \
+        .limit(limit) \
         .to_list(limit)
 
-    operations_count = await db["operations"].count_documents(query_filter)
+    operations_count = await db["operations"].count_documents(
+        query_filter,
+        collation=collation
+    )
 
     for trx in operations:
         trx['_id'] = str(trx['_id'])
