@@ -1,7 +1,7 @@
+import json
 from os import getenv
 
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from api.routers import operations
@@ -31,8 +31,8 @@ tags_metadata += [{
     "Related to _information_ and _health measurements_ of this _API_"}]
 
 
-BACKEND_CORS_ORIGINS = getenv("BACKEND_CORS_ORIGINS", default=False)
-ALLOWED_HOSTS = getenv("ALLOWED_HOSTS", default=False)
+_hosts_env = getenv("ALLOWED_HOSTS", default=None)
+ALLOWED_HOSTS = json.loads(_hosts_env) if _hosts_env else None
 
 app = FastAPI(
     title=API_TITLE,
@@ -51,16 +51,6 @@ app.include_router(fastbtc.router)
 app.include_router(events.router)
 app.include_router(omoc.router)
 
-
-if BACKEND_CORS_ORIGINS:
-    # Sets all CORS enabled origins
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[str(origin) for origin in BACKEND_CORS_ORIGINS],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
 
 if ALLOWED_HOSTS:
     # Guards against HTTP Host Header attacks

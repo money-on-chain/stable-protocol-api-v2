@@ -1,7 +1,10 @@
 from fastapi import APIRouter, Query, HTTPException
 from typing import Annotated
+from pymongo.collation import Collation
 
 from api.db import get_db
+
+collation = Collation(locale="en", strength=2)
 from api.models.fastbtc import mongo_date_to_str, PegOutList
 
 
@@ -35,18 +38,18 @@ async def peg_out_list(
         raise HTTPException(status_code=400, detail="Cannot get DB")
 
     query_filter = {
-        "rskAddress": {"$regex": recipient, '$options': 'i'},
+        "rskAddress": recipient,
         "type": "PEG_OUT"
     }
 
     transactions = await db["FastBtcBridge"]\
-        .find(query_filter)\
+        .find(query_filter, collation=collation)\
         .sort("timestamp", -1)\
         .skip(skip)\
         .limit(limit)\
         .to_list(limit)
 
-    transactions_count = await db["FastBtcBridge"].count_documents(query_filter)
+    transactions_count = await db["FastBtcBridge"].count_documents(query_filter, collation=collation)
 
     for trx in transactions:
         trx['_id'] = str(trx['_id'])

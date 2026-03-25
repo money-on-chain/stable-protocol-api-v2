@@ -3,6 +3,7 @@ from typing import Annotated
 from pymongo.collation import Collation
 
 from api.db import get_db
+from api.logger import log
 from api.models.operations import OperationSummary, OperationsList, Operations, DATE_FIELDS, OperationsSummaryResponse
 from api.utils import fields_date_to_str
 
@@ -194,4 +195,5 @@ async def queued_opers():
         return {"result": result}
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        log.exception(f'Error in queued_opers: {e}')
+        raise HTTPException(status_code=500, detail="Internal server error")

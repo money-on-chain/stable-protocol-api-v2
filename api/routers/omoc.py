@@ -1,7 +1,10 @@
 from fastapi import APIRouter, Query, HTTPException
 from typing import Annotated
+from pymongo.collation import Collation
 
 from api.db import get_db
+
+collation = Collation(locale="en", strength=2)
 from api.models.omoc import DATE_FIELDS, \
     VestingCreatedList, \
     ClaimOKList, \
@@ -47,17 +50,17 @@ async def vesting_created(
         raise HTTPException(status_code=400, detail="Cannot get DB")
 
     query_filter = {
-        "holder": {"$regex": holder.lower(), '$options': 'i'}
+        "holder": holder
     }
 
     rows = await db["event_VestingFactory_VestingCreated"]\
-        .find(query_filter)\
+        .find(query_filter, collation=collation)\
         .sort("createdAt", -1)\
         .skip(skip)\
         .limit(limit)\
         .to_list(limit)
 
-    rows_count = await db["event_VestingFactory_VestingCreated"].count_documents(query_filter)
+    rows_count = await db["event_VestingFactory_VestingCreated"].count_documents(query_filter, collation=collation)
 
     for trx in rows:
         trx['_id'] = str(trx['_id'])
@@ -109,17 +112,17 @@ async def claim_ok(
         raise HTTPException(status_code=400, detail="Cannot get DB")
 
     query_filter = {
-        "recipient": {"$regex": holder.lower(), '$options': 'i'}
+        "recipient": holder
     }
 
     rows = await db["event_IncentiveV2_ClaimOK"]\
-        .find(query_filter)\
+        .find(query_filter, collation=collation)\
         .sort("createdAt", -1)\
         .skip(skip)\
         .limit(limit)\
         .to_list(limit)
 
-    rows_count = await db["event_IncentiveV2_ClaimOK"].count_documents(query_filter)
+    rows_count = await db["event_IncentiveV2_ClaimOK"].count_documents(query_filter, collation=collation)
 
     for trx in rows:
         trx['_id'] = str(trx['_id'])
