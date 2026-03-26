@@ -5,7 +5,6 @@ from fastapi import FastAPI
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from api.routers import operations
-from api.routers import fastbtc
 from api.routers import events
 from api.routers import omoc
 from api.models.base import InfoApi
@@ -47,7 +46,6 @@ app.add_event_handler("startup", connect_and_init_db)
 app.add_event_handler("shutdown", close_db_connect)
 
 app.include_router(operations.router)
-app.include_router(fastbtc.router)
 app.include_router(events.router)
 app.include_router(omoc.router)
 

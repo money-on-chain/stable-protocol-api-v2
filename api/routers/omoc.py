@@ -4,7 +4,6 @@ from pymongo.collation import Collation
 
 from api.db import get_db
 
-collation = Collation(locale="en", strength=2)
 from api.models.omoc import DATE_FIELDS, \
     VestingCreatedList, \
     ClaimOKList, \
@@ -20,6 +19,7 @@ from api.models.omoc import DATE_FIELDS, \
 from api.utils import fields_date_to_str
 
 
+collation = Collation(locale="en", strength=2)
 router = APIRouter()
 
 
@@ -50,7 +50,7 @@ async def vesting_created(
         raise HTTPException(status_code=400, detail="Cannot get DB")
 
     query_filter = {
-        "holder": holder
+        "holder": holder.lower()
     }
 
     rows = await db["event_VestingFactory_VestingCreated"]\
@@ -112,7 +112,7 @@ async def claim_ok(
         raise HTTPException(status_code=400, detail="Cannot get DB")
 
     query_filter = {
-        "recipient": holder
+        "recipient": holder.lower()
     }
 
     rows = await db["event_IncentiveV2_ClaimOK"]\
