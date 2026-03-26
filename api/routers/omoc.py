@@ -33,7 +33,7 @@ async def vesting_created(
         holder: Annotated[str, Query(
             title="Holder address",
             description="Holder Address",
-            regex='^0x[a-fA-F0-9]{40}$')] = '0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3',
+            pattern='^0x[a-fA-F0-9]{40}$')] = '0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3',
         limit: Annotated[int, Query(
             title="Limit",
             description="Limit",
@@ -95,7 +95,7 @@ async def claim_ok(
         holder: Annotated[str, Query(
             title="Holder address",
             description="Holder Address",
-            regex='^0x[a-fA-F0-9]{40}$')] = '0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3',
+            pattern='^0x[a-fA-F0-9]{40}$')] = '0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3',
         limit: Annotated[int, Query(
             title="Limit",
             description="Limit",
