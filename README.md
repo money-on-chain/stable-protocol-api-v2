@@ -35,8 +35,6 @@ Go to http://localhost:8000/
 
 | Environment   | Project   | URL                                    | 
 |---------------|-----------|----------------------------------------|
-| Testnet       | Flipmoney | https://api-testnet.flipmoney.io/      |
-| Mainnet       | Flipmoney | https://api-v2.flipmoney.io/           |
 | Testnet       | ROC       | https://api-v2-testnet.rifonchain.com/ |
 | Mainnet       | ROC       | https://api-v2.rifonchain.com/         |
 

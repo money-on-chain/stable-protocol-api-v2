@@ -3,6 +3,7 @@ from typing import Annotated
 from pymongo.collation import Collation
 
 from api.db import get_db
+from api.logger import log
 from api.models.operations import OperationSummary, OperationsList, Operations, DATE_FIELDS, OperationsSummaryResponse
 from api.utils import fields_date_to_str
 
@@ -21,7 +22,7 @@ async def operations_list(
         recipient: Annotated[str, Query(
             title="Recipient address",
             description="Recipient address",
-            regex='^0x[a-fA-F0-9]{40}$')] = '0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3',
+            pattern='^0x[a-fA-F0-9]{40}$')] = '0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3',
         limit: Annotated[int, Query(
             title="Limit",
             description="Limit",
@@ -194,4 +195,5 @@ async def queued_opers():
         return {"result": result}
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        log.exception(f'Error in queued_opers: {e}')
+        raise HTTPException(status_code=500, detail="Internal server error")
