@@ -7,21 +7,12 @@ while getopts ":e:i:r:" o; do
     case "${o}" in
         e)
             e=${OPTARG}
-            ((  e=="flipago_testnet" || e=="flipago_mainnet" || e == "roc_testnet" || e == "roc_mainnet" || e == "stablex_testnet")) || usage
+            ((  e == "roc_testnet" || e == "roc_mainnet")) || usage
             case $e in
-                flipago_testnet)
-                    ENV=$e
-                    ;;
-                flipago_mainnet)
-                    ENV=$e
-                    ;;
                 roc_testnet)
                     ENV=$e
                     ;;
                 roc_mainnet)
-                    ENV=$e
-                    ;;
-                stablex_testnet)
                     ENV=$e
                     ;;
                 *)
@@ -48,17 +39,17 @@ if [ -z "${e}" ] || [ -z "${i}" ] || [ -z "${r}" ]; then
     usage
 fi
 
-docker image build -t stable-protocol-api-v2_$ENV -f ./Dockerfile.api .
+docker image build -t "stable-protocol-api-v2_${ENV}" -f ./Dockerfile.api .
 
 echo "Build done!"
 
 # login into aws ecr
-$(aws ecr get-login --no-include-email --region $AWS_REGION)
+aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$AWS_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
 
 echo "Logging to AWS done!"
 
-docker tag stable-protocol-api-v2_$ENV:latest $AWS_ID.dkr.ecr.$AWS_REGION.amazonaws.com/stable-protocol-api-v2_$ENV:latest
+docker tag "stable-protocol-api-v2_${ENV}:latest" "$AWS_ID.dkr.ecr.$AWS_REGION.amazonaws.com/stable-protocol-api-v2_${ENV}:latest"
 
-docker push $AWS_ID.dkr.ecr.$AWS_REGION.amazonaws.com/stable-protocol-api-v2_$ENV:latest
+docker push "$AWS_ID.dkr.ecr.$AWS_REGION.amazonaws.com/stable-protocol-api-v2_${ENV}:latest"
 
 echo "finish done!"

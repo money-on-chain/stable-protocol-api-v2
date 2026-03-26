@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Query, HTTPException
 from typing import Annotated
+from pymongo.collation import Collation
 
 from api.db import get_db
+from api.logger import log
 from api.models.operations import OperationSummary, OperationsList, Operations, DATE_FIELDS, OperationsSummaryResponse
 from api.utils import fields_date_to_str
 
+collation = Collation(locale="en", strength=2)
 
 router = APIRouter()
 
@@ -19,7 +22,7 @@ async def operations_list(
         recipient: Annotated[str, Query(
             title="Recipient address",
             description="Recipient address",
-            regex='^0x[a-fA-F0-9]{40}$')] = '0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3',
+            pattern='^0x[a-fA-F0-9]{40}$')] = '0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3',
         limit: Annotated[int, Query(
             title="Limit",
             description="Limit",
@@ -36,22 +39,41 @@ async def operations_list(
     if db is None:
         raise HTTPException(status_code=400, detail="Cannot get DB")
 
+    recipient = recipient.lower()
+
+    """
+    This need to create index:
+    
+    db.operations.createIndex(
+      { "executed.recipient_": 1 },
+      { name: "executed_recipient_ci", collation: { locale: "en", strength: 2 } }
+    )
+    
+    db.operations.createIndex(
+      { "executed.sender_": 1 },
+      { name: "executed_sender_ci", collation: { locale: "en", strength: 2 } }
+    )
+    """
+
     query_filter = {
         "$or": [
-            {"params.recipient": {"$regex": recipient.lower(), '$options': 'i'}},
-            {"params.sender": {"$regex": recipient.lower(), '$options': 'i'}},
-            {"executed.recipient_": {"$regex": recipient.lower(), '$options': 'i'}},
-            {"executed.sender_": {"$regex": recipient.lower(), '$options': 'i'}}
+            {"params.recipient": recipient},
+            {"params.sender": recipient},
+            {"executed.recipient_": recipient},
+            {"executed.sender_": recipient}
         ]
     }
 
-    operations = await db["operations"]\
-        .find(query_filter)\
-        .skip(skip)\
-        .limit(limit)\
+    operations = await db["operations"] \
+        .find(query_filter, collation=collation) \
+        .skip(skip) \
+        .limit(limit) \
         .to_list(limit)
 
-    operations_count = await db["operations"].count_documents(query_filter)
+    operations_count = await db["operations"].count_documents(
+        query_filter,
+        collation=collation
+    )
 
     for trx in operations:
         trx['_id'] = str(trx['_id'])
@@ -173,4 +195,5 @@ async def queued_opers():
         return {"result": result}
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        log.exception(f'Error in queued_opers: {e}')
+        raise HTTPException(status_code=500, detail="Internal server error")
