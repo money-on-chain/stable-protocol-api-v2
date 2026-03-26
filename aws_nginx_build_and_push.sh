@@ -48,17 +48,17 @@ if [ -z "${e}" ] || [ -z "${i}" ] || [ -z "${r}" ]; then
     usage
 fi
 
-docker image build -t stable-protocol-api-v2-nginx_$ENV -f ./Dockerfile.nginx .
+docker image build -t "stable-protocol-api-v2-nginx_${ENV}" -f ./Dockerfile.nginx .
 
 echo "Build done!"
 
 # login into aws ecr
-$(aws ecr get-login --no-include-email --region $AWS_REGION)
+aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$AWS_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
 
 echo "Logging to AWS done!"
 
-docker tag stable-protocol-api-v2-nginx_$ENV:latest $AWS_ID.dkr.ecr.$AWS_REGION.amazonaws.com/stable-protocol-api-v2-nginx_$ENV:latest
+docker tag "stable-protocol-api-v2-nginx_${ENV}:latest" "$AWS_ID.dkr.ecr.$AWS_REGION.amazonaws.com/stable-protocol-api-v2-nginx_${ENV}:latest"
 
-docker push $AWS_ID.dkr.ecr.$AWS_REGION.amazonaws.com/stable-protocol-api-v2-nginx_$ENV:latest
+docker push "$AWS_ID.dkr.ecr.$AWS_REGION.amazonaws.com/stable-protocol-api-v2-nginx_${ENV}:latest"
 
 echo "finish done!"
