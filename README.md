@@ -1,6 +1,6 @@
 # Stable Protocol API v2
 
-## Warning: This is only for version 2 of the main contracts.
+## Note: DEPRECATED!!! This repo is going to be deprecated use V3
 
 API list operations of the users dapp. This is a requirement for [stable-protocol-interface-v2](https://github.com/money-on-chain/stable-protocol-interface-v2), this service list operations of the users.
 
